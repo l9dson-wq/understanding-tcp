@@ -3,16 +3,16 @@ package main
 import (
     "fmt"
     "net"
-    "bufio"
     "log"
+    "bufio"
 )
 
 func main() {
-    // defining the listener.
+    // start listening
     li, err := net.Listen("tcp", ":8090")
     if err != nil {
         log.Fatalln(err)
-    } 
+    }
 
     defer li.Close()
 
@@ -21,7 +21,7 @@ func main() {
     for {
         conn, err := li.Accept()
         if err != nil {
-            log.Println(err)
+            fmt.Println(err)
             continue
         }
         go handle(conn)
@@ -33,11 +33,13 @@ func handle(conn net.Conn) {
     for scanner.Scan() {
         ln := scanner.Text()
         fmt.Println(ln)
+        fmt.Fprintf(conn, "I've heard you said: %s\n", ln)
     }
+
     defer conn.Close()
 
-    // Code never goes here
-    // We have an open stream connection
-    // how does the above reader know when it's done
+    // we never get here
+    // we have an open stream connection
+    // how does the above reader know it's done?
     fmt.Println("CODE GETTING HERE")
 }
